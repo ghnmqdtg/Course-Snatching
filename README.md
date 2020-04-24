@@ -1,0 +1,1 @@
+This python script is designed to get enrolled courses in NTUST.
