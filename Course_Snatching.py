@@ -103,7 +103,7 @@ with requests.Session() as session:
         if (count % 10) == 0:
             checking = session.get(config["URL"]["checking"], headers=headers)
             soup = BeautifulSoup(checking.content, features='html.parser')
-            credit_after = int(soup.select('#PrintArea > div.modal-body > div')[0].string.replace(' ','').replace('\n','').replace('\r','').replace('總學分數:',''))
+            credit_after = int(soup.select('#PrintArea > div.modal-body > div')[0].string.replace(' ', '').replace('\n', '').replace('\r', '').replace('總學分數:', ''))
             # print(credit_after)
             if (credit_current + credit_course) == credit_after:
                 print("Mission Complete")
