@@ -6,17 +6,15 @@ from bs4 import BeautifulSoup
 import time
 import datetime
 import random
+import configparser
+import ast
+
+config = configparser.ConfigParser()
+config.read("config.ini")
 
 urllib3.disable_warnings()  # to disable warning messages
 
 courseno = 0
-
-url = {
-    "login": "https://courseselection.ntust.edu.tw/Account/Login",
-    "extrajoin": "https://courseselection.ntust.edu.tw/AddAndSub/B01/ExtraJoin",
-    "captcha": "https://courseselection.ntust.edu.tw/Account/GetValidateCode",
-    "checking": "https://courseselection.ntust.edu.tw/ChooseList/D03/D03"
-}
 
 headers = {
     "Content-Type": "text/html; charset=utf-8"
@@ -32,12 +30,6 @@ data_extrajoin = {
     "CourseNo": courseno,
     "type": "3"
 }
-
-
-def text_read(filename):
-    with open(filename, 'r') as file:
-        lines = [line.rstrip() for line in file]  # write lines into list
-        return lines
 
 
 def verifycode(filename):
@@ -62,23 +54,23 @@ def verifycode(filename):
 
 def login():
     while True:
-        response = session.get(url["login"], headers=headers, verify=False)
+        response = session.get(config["URL"]["login"], headers=headers, verify=False)
         if response.status_code == requests.codes.ok:
             soup = BeautifulSoup(response.content, features='html.parser')
             soup.encoding = 'utf-8'
             token = soup.select('body > div > div > div > div > div > div > form > input[type=hidden]')[0].get('value')
             # print(token)
-            response = session.get(url["captcha"], verify=False)
+            response = session.get(config["URL"]["captcha"], verify=False)
             open('img.png', 'wb').write(response.content)
             captcha = verifycode('img.png')
 
             # print(captcha)
             data_login["__RequestVerificationToken"] = token
-            data_login["UserName"] = studentno
-            data_login["Password"] = password
+            data_login["UserName"] = config["stud_info"]["studentno"]
+            data_login["Password"] = config["stud_info"]["password"]
             data_login["VerifyCode"] = captcha
 
-            r_temp = session.post(url["login"], data=data_login)
+            r_temp = session.post(config["URL"]["login"], data=data_login)
             if r_temp.status_code == requests.codes.ok:
                 soup = BeautifulSoup(r_temp.content, features='html.parser')
                 soup.encoding = 'utf-8'
@@ -92,12 +84,9 @@ def login():
 
 
 with requests.Session() as session:
-    lines = text_read("login_data.txt")
-    course_list = lines[0].split()
-    studentno = lines[1]
-    password = lines[2]
-    credit_current = int(lines[3])
-    credit_course = int(lines[4])
+    course_list = ast.literal_eval(config['stud_info']['course_list'])
+    credit_current = config['stud_info']['credit_current']
+    credit_course = config['stud_info']['credit_course']
 
     login()
 
@@ -107,13 +96,12 @@ with requests.Session() as session:
         courseno = course_list[random.randint(0, len(course_list) - 1)]
         print(courseno)
         print(datetime.datetime.now().strftime("%H:%M:%S") + " Attempts : ", count)
-        # print(datetime.datetime.now().strftime("%H:%M:%S") + " Attempts : %d" % count)
-        response = session.post(url["extrajoin"], headers=headers_extrajoin, data=data_extrajoin)
+        response = session.post(config["URL"]["extrajoin"], headers=headers_extrajoin, data=data_extrajoin)
 
         count = count + 1
 
         if (count % 10) == 0:
-            checking = session.get(url["checking"], headers=headers)
+            checking = session.get(config["URL"]["checking"], headers=headers)
             soup = BeautifulSoup(checking.content, features='html.parser')
             credit_after = int(soup.select('#PrintArea > div.modal-body > div')[0].string.replace(' ','').replace('\n','').replace('\r','').replace('總學分數:',''))
             # print(credit_after)
