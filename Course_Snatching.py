@@ -47,7 +47,10 @@ def verifycode(filename):
     verifycode = text.replace(' ', '').replace('\n', '').replace(':', '')\
         .replace('+', '').replace('-', '').replace('*', '').replace('/', '')\
         .replace('.', '').replace('|', '').replace('"', '').replace('=', '')\
-        .replace('_', '')
+        .replace('_', '').replace('‘', '').replace('“', '').replace('€', '')\
+        .replace('&', '').replace('(', '').replace('¥', '').replace(',', '')\
+        .replace('#', '').replace('©', '').replace('”', '').replace('™', '')\
+        .replace('°', '').replace('~', '').replace('>', '').replace('é', '')
     # print(captcha)
     return verifycode
 
