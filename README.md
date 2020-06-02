@@ -1,12 +1,14 @@
 # Course Snatching(Requests Version)
 ## Introduction
-This tool is designed to get enrolled courses in NTUST by using Requests.
+This tool is designed to get enrolled in NTUST courses by using Requests.
 
-Since it's unlucky for some student to fail to get enrolled in courses they want, and I was learning python, so I made it to ameliorate the problem with what I've learned.
+Since it's unlucky for some students to fail to get enrolled in courses they want, and I was learning python, so I made it to ameliorate the problem with what I've learned.
 
-But I have to declare that **it's only for research purposes** because using such kinda tool is unfair for other students.
+But I have to declare that **it's only for research purposes** because using such kinda tool is unfair for other students. The reason why I made it is all for training and improving myself.
 
 **The tool had out of work since NTUST has an upgrade the way to anti-robot with Google's reCAPTCHA in April 2020**, so I think it's time to open source it.
+
+~~The tool has a Selenium version, but the efficiency was terrible.~~
 
 ## Basic knowledge
 1. Python
